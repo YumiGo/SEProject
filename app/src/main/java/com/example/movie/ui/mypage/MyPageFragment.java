@@ -18,15 +18,7 @@ public class MyPageFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        MyPageViewModel myPageViewModel = new ViewModelProvider(this).get(MyPageViewModel.class);
         View root = inflater.inflate(R.layout.fragment_my_page, container, false);
-        final TextView textView = root.findViewById(R.id.text_my_page);
-        myPageViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
         return root;
     }
 }
