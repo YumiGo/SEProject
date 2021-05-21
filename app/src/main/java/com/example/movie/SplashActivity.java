@@ -27,7 +27,7 @@ public class SplashActivity extends AppCompatActivity {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         Splash_Activity = com.example.movie.SplashActivity.this;
 
-        //1. if (로그인이 안 된 상태일 때) -> 애니매이션 효과 + 버튼 2개 등장
+        //1. if (로그인이 안 된 상태일 때)
         if(FirebaseAuth.getInstance().getCurrentUser() == null){
             setContentView(R.layout.activity_splash1);
 

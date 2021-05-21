@@ -1,5 +1,6 @@
 package com.example.movie;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
@@ -13,7 +14,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends AppCompatActivity {
-
+    public static Activity Main_Activity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
