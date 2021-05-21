@@ -116,7 +116,7 @@
                 startActivityForResult(intent,RC_SIGN_IN);
             }
         });
-        //비밀번호 찾기 버튼을 눌렀을 때
+        /*비밀번호 찾기 버튼을 눌렀을 때
         txt_find_pw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -124,6 +124,7 @@
                 startActivity(intent);
             }
         });
+         */
     }
 
     @Override// 구글 로그인 인증 요청 했을 때 값 받음
