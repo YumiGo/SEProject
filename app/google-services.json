@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "178534596029",
+    "firebase_url": "https://movie-1b568-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "movie-1b568",
+    "storage_bucket": "movie-1b568.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:178534596029:android:727a345bdd8573e698a6d4",
+        "android_client_info": {
+          "package_name": "com.example.movie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "178534596029-v6jegqcvie7qikfbp87q6h7d6fgqqgor.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.movie",
+            "certificate_hash": "09829845c532e1c37dcce10cce29d875af5c1cf9"
+          }
+        },
+        {
+          "client_id": "178534596029-ksidcat5073m2uemo7ibvhq44kaevior.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdBOTJ2PQOhiiuUzOVvygJ_3RtMxq84yg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "178534596029-ksidcat5073m2uemo7ibvhq44kaevior.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

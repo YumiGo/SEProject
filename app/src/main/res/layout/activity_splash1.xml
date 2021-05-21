@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/main_background">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/splash_logo"
+        android:layout_marginTop="200dp"
+        android:layout_gravity="center"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom">
+
+        <ImageButton
+            android:id="@+id/btn_signUp"
+            android:layout_width="150dp"
+            android:layout_height="76dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="30dp"
+            android:layout_gravity="bottom"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/btn_sign_up"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="30dp" />
+
+        <ImageButton
+            android:id="@+id/btn_signIn"
+            android:layout_width="150dp"
+            android:layout_height="76dp"
+            android:layout_gravity="bottom"
+            android:background="@android:color/transparent"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/btn_sign_in" />
+    </LinearLayout>
+
+
+
+
+
+
+</LinearLayout>
