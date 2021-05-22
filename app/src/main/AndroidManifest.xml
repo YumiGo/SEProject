@@ -26,7 +26,8 @@
         <activity android:name=".SignInActivity"/>
         <activity android:name=".MainActivity"/>
         <activity android:name=".PasswordResetActivity"/>
-
+        <activity android:name=".ui.settings.DeveloperActivity"/>
+        <activity android:name=".ui.settings.BugReportActivity"/>
     </application>
 
 </manifest>
