@@ -1,7 +1,6 @@
 package com.example.movie;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -24,11 +23,13 @@ import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -52,8 +53,6 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
     private GoogleApiClient googleApiClient;
     private static final int RC_SIGN_IN = 1000;
     private CallbackManager mCallbackManager;
-    SharedPreferences sh_Pref;
-    SharedPreferences.Editor toEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +114,8 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
         googleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
@@ -123,8 +124,8 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
         btn_google.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-                startActivityForResult(intent,RC_SIGN_IN);
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                startActivityForResult(signInIntent,RC_SIGN_IN);
             }
         });
     }
@@ -132,39 +133,46 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
     @Override// 구글 로그인 인증 요청 했을 때 값 받음 + 페이스북 로그인도
     protected void onActivityResult(int requestCode, int resultCode,@Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);//공통 코드
-        if(requestCode == RC_SIGN_IN){
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            if(result.isSuccess()){
-                GoogleSignInAccount account = result.getSignInAccount(); //구글 로그인 정보 담는다
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
+                firebaseAuthWithGoogle(account.getIdToken());
+            } catch (ApiException e) {
+                // Google Sign In failed, update UI appropriately
+                Log.w(TAG, "Google sign in failed", e);
             }
         }
-        else{
-            mCallbackManager.onActivityResult(requestCode, resultCode, data);//페이스북 코드
-        }
-    }
 
-    private void resultLogin(GoogleSignInAccount account) {//결과값 출력 메소드
-        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()) {//로그인 성공
-                            Toast.makeText(com.example.movie.SignUpActivity.this, "회원가입 성공",
+    }
+    
+private void firebaseAuthWithGoogle(String idToken) {
+    AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+    mAuth.signInWithCredential(credential)
+            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "signInWithCredential:success");
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        Toast.makeText(com.example.movie.SignUpActivity.this, "회원가입 성공",
                                     Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
                             startActivity(intent);
                             finish();
-                        }
-                        else{
-                            Toast.makeText(com.example.movie.SignUpActivity.this, "회원가입 실패",
+
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signInWithCredential:failure", task.getException());
+                        Toast.makeText(com.example.movie.SignUpActivity.this, "회원가입 실패",
                                     Toast.LENGTH_SHORT).show();
-                        }
-
                     }
-                });
-    }
-
+                }
+            });
+}
     /*활동을 초기화할 때 사용자가 현재 로그인되어 있는지 확인*/
     @Override
     public void onStart() {
@@ -291,11 +299,5 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
                 Log.e("KeyHash", "Unable to get MessageDigest. signature=" + signature, e);
             }
         }
-    }
-    public void sharedPreference(String key, String value) {
-        sh_Pref = getSharedPreferences("Login Credentials", MODE_PRIVATE);
-        toEdit = sh_Pref.edit();
-        toEdit.putString(key, value);//쓴다
-        toEdit.commit();
     }
     }
