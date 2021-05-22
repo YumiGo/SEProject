@@ -54,7 +54,7 @@
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
+        setContentView(R.layout.activity_sign_in);
         getSupportActionBar().setTitle("Sign In");
         ImageButton btn_login = (ImageButton)findViewById(R.id.btn_login);
         ImageButton btn_google_login = (ImageButton)findViewById(R.id.btn_google);
@@ -116,7 +116,6 @@
                 startActivityForResult(intent,RC_SIGN_IN);
             }
         });
-        /*비밀번호 찾기 버튼을 눌렀을 때
         txt_find_pw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -124,7 +123,7 @@
                 startActivity(intent);
             }
         });
-         */
+
     }
 
     @Override// 구글 로그인 인증 요청 했을 때 값 받음
