@@ -53,8 +53,8 @@ public class SettingsFragment extends Fragment {
                     startActivity(intent);
                 }
                 else if(position==1){
-                    //intent=new Intent(getActivity(), SettingActivity.class);
-                    //startActivity(intent);
+                    intent=new Intent(getActivity(), VersionInfoActivity.class);
+                    startActivity(intent);
                 }
                 else if(position==2){
                     intent=new Intent(getActivity(), BugReportActivity.class);
