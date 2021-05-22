@@ -97,7 +97,6 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
                     public void onSuccess(LoginResult loginResult) {
                         Log.d(TAG, "facebook:onSuccess:" + loginResult);
                         handleFacebookAccessToken(loginResult.getAccessToken());
-
                     }
                     @Override
                     public void onCancel() {
@@ -108,6 +107,7 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
                         Log.d(TAG, "facebook:onError", error);
                     }
                 });
+
             }
         });
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -145,34 +145,36 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
                 Log.w(TAG, "Google sign in failed", e);
             }
         }
-
+        else{
+            mCallbackManager.onActivityResult(requestCode, resultCode, data);//페이스북 코드
+        }
     }
-    
-private void firebaseAuthWithGoogle(String idToken) {
-    AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-    mAuth.signInWithCredential(credential)
-            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "signInWithCredential:success");
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        Toast.makeText(com.example.movie.SignUpActivity.this, "회원가입 성공",
+
+    private void firebaseAuthWithGoogle(String idToken) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Toast.makeText(com.example.movie.SignUpActivity.this, "회원가입 성공",
                                     Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
                             startActivity(intent);
                             finish();
 
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w(TAG, "signInWithCredential:failure", task.getException());
-                        Toast.makeText(com.example.movie.SignUpActivity.this, "회원가입 실패",
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Toast.makeText(com.example.movie.SignUpActivity.this, "회원가입 실패",
                                     Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }
-            });
-}
+                });
+    }
     /*활동을 초기화할 때 사용자가 현재 로그인되어 있는지 확인*/
     @Override
     public void onStart() {
@@ -239,7 +241,7 @@ private void firebaseAuthWithGoogle(String idToken) {
                         }
                     });
         }
-        
+
 
     }
     @Override
@@ -256,6 +258,7 @@ private void firebaseAuthWithGoogle(String idToken) {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             Toast.makeText(com.example.movie.SignUpActivity.this, "회원가입 성공",
@@ -300,4 +303,4 @@ private void firebaseAuthWithGoogle(String idToken) {
             }
         }
     }
-    }
+}
