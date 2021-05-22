@@ -65,7 +65,7 @@
             android:id="@+id/movieContent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:text="줄거리"/>
     </ScrollView>
 
