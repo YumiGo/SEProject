@@ -6,6 +6,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -51,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 //영화는 뷰페이저2 레이아웃으로 좌우 스크롤
@@ -65,6 +67,7 @@ public class HomeFragment extends Fragment {
     // 영화 뷰
     private static ArrayList<Movie> mList;
     private static MovieAdapter mAdapter;
+    private RecyclerView movieViewList;
 
     private static int width;
     
@@ -97,8 +100,9 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(
                 getContext(), LinearLayoutManager.HORIZONTAL, false);
 
-        RecyclerView movieViewList = root.findViewById(R.id.movieViewList);
+        movieViewList = root.findViewById(R.id.movieViewList);
         movieViewList.setLayoutManager(manager);
+        movieViewList.getLayoutManager().scrollToPosition(Integer.MAX_VALUE / 2 + 7);
 
         // 영화 포스터에 따라 홈 아래쪽의 영화 정보 변경
         TextSwitcher nameSwitcher = root.findViewById(R.id.nameSwitcher);
@@ -114,7 +118,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int position = ((LinearLayoutManager) movieViewList.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+                int position = ((LinearLayoutManager) movieViewList.getLayoutManager()).findFirstCompletelyVisibleItemPosition() % 10;
                 if (position >= 0 && position < mList.size()) {
                     Movie movie = mList.get(position);
                     TextView tv = (TextView) nameSwitcher.getCurrentView();
@@ -123,6 +127,13 @@ public class HomeFragment extends Fragment {
                         directorSwitcher.setText(movie.getDirector());
                     }
                 }
+            }
+        });
+
+        movieViewList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
             }
         });
         
@@ -136,10 +147,15 @@ public class HomeFragment extends Fragment {
             
             // 영화 정보 받아오기
             database.child("movie").get().addOnCompleteListener(task -> {
-                if (task.isSuccessful())
+                if (task.isSuccessful()) {
                     for (DataSnapshot child : task.getResult().getChildren()) {
                         Movie movie = child.getValue(Movie.class);
                         Log.d(TAG, "영화 데이터 불러오기: " + movie.toString());
+
+                        if (movie.getId() == 0) {
+                            nameSwitcher.setText(movie.getName());
+                            directorSwitcher.setText(movie.getDirector());
+                        }
 
                         // 파이어베이스 데이터 절약용 이미지 캐싱
                         String cachePath = getContext().getCacheDir().getPath() + "/" + movie.getImageName();
@@ -166,12 +182,29 @@ public class HomeFragment extends Fragment {
                             Log.d(TAG, "이미지 다운: " + movie.getImageName());
                         });
                     }
+                    autoScroll();
+                }
             });
         }
+        else
+            autoScroll();
 
         movieViewList.setAdapter(mAdapter);
 
         return root;
+    }
+
+    // 영화 포스터 자동으로 스크롤 해주기
+    public void autoScroll() {
+        final Handler handler = new Handler();
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                movieViewList.scrollBy(1, 0);
+                handler.postDelayed(this, 0);
+            }
+        };
+        handler.postDelayed(runnable, 0);
     }
 
     // 다운받은 이미지를 내부 저장소에 따로 저장(캐싱)

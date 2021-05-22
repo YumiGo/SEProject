@@ -44,6 +44,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
+        position = position % 10;
+        if (mList == null || mList.size() == 0)
+            return;
+
         Movie movie = mList.get(position);
         holder.movieImage.setImageBitmap(movie.getImage());
 
@@ -62,7 +66,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public int getItemCount() {
-        return (mList == null ? 0 : mList.size());
+        return (mList == null ? 0 : Integer.MAX_VALUE);
     }
 
     @NonNull
