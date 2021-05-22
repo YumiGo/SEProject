@@ -27,7 +27,7 @@ import java.util.ArrayList;
 public class SettingsFragment extends Fragment {
 
     ListView listView;
-    MainActivity MA = (MainActivity)MainActivity.Main_Activity;//메인 액티비티
+    MainActivity MA = (MainActivity)MainActivity.Main_Activity; //메인 액티비티
     @Override
     public void onStart() {
         super.onStart();

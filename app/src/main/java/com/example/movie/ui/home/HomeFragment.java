@@ -80,7 +80,7 @@ public class HomeFragment extends Fragment {
             public void run() {
                 try  {
                     // 이제 필요 없음
-                    //requestAPI();
+                    requestAPI();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -97,12 +97,14 @@ public class HomeFragment extends Fragment {
         RecyclerView movieViewList = root.findViewById(R.id.movieViewList);
         movieViewList.setLayoutManager(manager);
 
+
+
         // 영화 데이터 중복 다운 방지
         if (!isLoaded) {
             isLoaded = true;
 
             mList = new ArrayList<>();
-            mAdapter = new MovieAdapter(getContext(), mList);
+            mAdapter = new MovieAdapter(getActivity().getApplicationContext(), mList);
             
             // 영화 정보 받아오기
             database.child("movie").get().addOnCompleteListener(task -> {
@@ -124,7 +126,7 @@ public class HomeFragment extends Fragment {
                         }
 
                         // 파이어베이스에서 영화 포스터 받아오기
-                        final long TWO_MEGABYTE = 1024 * 1024 * 2;
+                        final long TWO_MEGABYTE = 1024 * 1024 * 12;
                         StorageReference ref = storage.child("movie image/" + movie.getImageName());
                         ref.getBytes(TWO_MEGABYTE).addOnSuccessListener(bytes -> {
                             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -230,7 +232,7 @@ public class HomeFragment extends Fragment {
                 //System.out.printf(movie[i] + '\n');
                 System.out.println(boxOffice);
 
-                database.child("movie").child(String.valueOf(i)).setValue(map);
+                //database.child("movie").child(String.valueOf(i)).setValue(map);
             }
 
         } catch (IOException | JSONException e) {

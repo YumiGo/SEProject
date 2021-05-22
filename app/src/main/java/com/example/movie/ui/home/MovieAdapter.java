@@ -3,8 +3,10 @@ package com.example.movie.ui.home;
 import com.example.movie.MovieActivity;
 import com.example.movie.data.Movie;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +48,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         // 영화 예약 액티비티 생성
         holder.cardView.setOnClickListener(v -> {
             Intent intent = new Intent(context, MovieActivity.class);
+            intent.putExtra("name", movie.getName());
+            intent.putExtra("director", movie.getDirector());
+            intent.putExtra("content", movie.getContent());
+            intent.putExtra("imageName", movie.getImageName());
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         });
     }

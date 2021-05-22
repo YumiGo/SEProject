@@ -2,9 +2,11 @@ package com.example.movie.data;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
+
 
 // 영화 정보 저장용
-public class Movie {
+public class Movie implements Serializable {
     private int id;
     private String name;
     private String content;
