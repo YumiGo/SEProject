@@ -12,6 +12,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextSwitcher;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -63,6 +65,8 @@ public class HomeFragment extends Fragment {
     // 영화 뷰
     private static ArrayList<Movie> mList;
     private static MovieAdapter mAdapter;
+
+    private static int width;
     
     // 파이어베이스
     private DatabaseReference database = FirebaseDatabase.getInstance().getReference();
@@ -87,8 +91,7 @@ public class HomeFragment extends Fragment {
             }
         });
         thread.start();
-
-
+        
 
         // 영화 포스터 스크롤 뷰 구현
         LinearLayoutManager manager = new LinearLayoutManager(
@@ -97,7 +100,32 @@ public class HomeFragment extends Fragment {
         RecyclerView movieViewList = root.findViewById(R.id.movieViewList);
         movieViewList.setLayoutManager(manager);
 
+        // 영화 포스터에 따라 홈 아래쪽의 영화 정보 변경
+        TextSwitcher nameSwitcher = root.findViewById(R.id.nameSwitcher);
+        nameSwitcher.setInAnimation(getContext(), android.R.anim.slide_in_left);
+        nameSwitcher.setOutAnimation(getContext(), android.R.anim.slide_out_right);
 
+        TextSwitcher directorSwitcher = root.findViewById(R.id.directorSwitcher);
+        directorSwitcher.setInAnimation(getContext(), android.R.anim.slide_in_left);
+        directorSwitcher.setOutAnimation(getContext(), android.R.anim.slide_out_right);
+
+        // 현재 보이는 포스터에 따라 영화 정보 텍스트 변경
+        movieViewList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int position = ((LinearLayoutManager) movieViewList.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+                if (position >= 0 && position < mList.size()) {
+                    Movie movie = mList.get(position);
+                    TextView tv = (TextView) nameSwitcher.getCurrentView();
+                    if (!tv.getText().toString().equals(movie.getName())) {
+                        nameSwitcher.setText(movie.getName());
+                        directorSwitcher.setText(movie.getDirector());
+                    }
+                }
+            }
+        });
+        
 
         // 영화 데이터 중복 다운 방지
         if (!isLoaded) {

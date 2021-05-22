@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextSwitcher;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -76,8 +78,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
-            cardView = (CardView) itemView;
-            this.movieImage = itemView.findViewById(R.id.movieImage);
+            cardView = itemView.findViewById(R.id.cardView);
+            movieImage = itemView.findViewById(R.id.movieImage);
         }
     }
 }

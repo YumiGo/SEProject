@@ -37,7 +37,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="25sp"
-                android:text="영화 이름" />
+                android:text="영화 이름"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/movieDirector"

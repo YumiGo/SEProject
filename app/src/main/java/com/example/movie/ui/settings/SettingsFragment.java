@@ -49,16 +49,16 @@ public class SettingsFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent;
                 if(position==0){
-                    intent=new Intent(getActivity(), DeveloperActivity.class);
-                    startActivity(intent);
+                    //intent=new Intent(getActivity(), AlarmActivity.class);
+                    //startActivity(intent);
                 }
                 else if(position==1){
                     //intent=new Intent(getActivity(), SettingActivity.class);
                     //startActivity(intent);
                 }
                 else if(position==2){
-                    intent=new Intent(getActivity(), BugReportActivity.class);
-                    startActivity(intent);
+                    //intent=new Intent(getActivity(), SettingActivity.class);
+                    //startActivity(intent);
                 }
                 else if(position==3){
                     AlertDialog.Builder alBuilder = new AlertDialog.Builder(getActivity());
