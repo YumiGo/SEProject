@@ -65,7 +65,7 @@ public class KakaopayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kakaopay);
-
+        getSupportActionBar().setTitle("Kakao Pay");
         // 초기화
         requestQueue = Volley.newRequestQueue(getApplicationContext());
         myWebViewClient = new MyWebViewClient();
