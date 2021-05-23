@@ -181,6 +181,7 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
+    // 데이터베이스 완전 초기화
     private void initDatabase(int count) {
         // DB 임시 초기화                                      (강동 메가박스)           (분노의 질주)
         DatabaseReference movieRef = database.child("theater").child("0").child("movie").child(String.valueOf(count));
@@ -234,6 +235,8 @@ public class HomeFragment extends Fragment {
                 DatabaseReference resvRef = movieRef.child("time").child(String.valueOf(i)).child("reservation").child(String.valueOf(j));
                 resvRef.child("reserved").child("0").setValue(0);
                 resvRef.child("reserving").child("0").setValue(0);
+                resvRef.child("the number of seats reserved").setValue(0);
+                resvRef.child("the number of seats reserving").setValue(0);
             }
         }
     }

@@ -25,13 +25,33 @@ import java.util.List;
 public class SeatActivity extends AppCompatActivity implements View.OnClickListener {
 
     private String TAG = "SeatActivity";
-    private int numOfPeople;
-    private HashSet<Integer> selectedSeatList;
-    private Button confirmSeatButton;
+    private int numOfPeople;    // 인원 수
+    private HashSet<Integer> selectedSeatList;  // 내가 예약하려는 좌석
+    private Button confirmSeatButton;   // 확인 버튼
+    private ArrayList<Integer> reservedSeat;    // 이미 예약된 좌석
+    private ArrayList<Integer> reservingSeat;   // 예약중인 좌석
 
     ViewGroup layout;
 
-    String seats = "_UUUUUUAAAAARRRR_/"
+    String seats = "_AAAAAAAAAAAAAAA_/"
+            + "_________________/"
+            + "AA__AAAAAAAAA__AA/"
+            + "AA__AAAAAAAAA__AA/"
+            + "AA__AAAAAAAAA__AA/"
+            + "AA__AAAAAAAAA__AA/"
+            + "AA__AAAA_AAAA__AA/"
+            + "AA__AAAA_AAAA__AA/"
+            + "AA__AAAA_AAAA__AA/"
+            + "AA__AAAA_AAAA__AA/"
+            + "_________________/"
+            + "AA_AAAAAAAAAAA_AA/"
+            + "AA_AAAAAAAAAAA_AA/"
+            + "AA_AAAAAAAAAAA_AA/"
+            + "AA_AAAAAAAAAAA_AA/"
+            + "_________________/";
+
+            /*
+            "_UUUUUUAAAAARRRR_/"
             + "_________________/"
             + "UU__AAAARRRRR__RR/"
             + "UU__UUUAAAAAA__AA/"
@@ -47,6 +67,8 @@ public class SeatActivity extends AppCompatActivity implements View.OnClickListe
             + "AA_UUAAAAAUUUU_AA/"
             + "AA_AAAAAAUUUUU_AA/"
             + "_________________/";
+
+             */
 
 
     List<TextView> seatViewList = new ArrayList<>();
@@ -65,6 +87,9 @@ public class SeatActivity extends AppCompatActivity implements View.OnClickListe
 
         numOfPeople = getIntent().getIntExtra("numOfPeople", 0);
         selectedSeatList = (HashSet<Integer>) getIntent().getSerializableExtra("selectedSeatList");
+        reservedSeat = (ArrayList<Integer>) getIntent().getSerializableExtra("reservedSeat");
+        reservingSeat = (ArrayList<Integer>) getIntent().getSerializableExtra("reservingSeat");
+
         getSupportActionBar().setTitle("좌석선택");
         confirmSeatButton = findViewById(R.id.confirmSeatButton);
 
@@ -89,7 +114,53 @@ public class SeatActivity extends AppCompatActivity implements View.OnClickListe
                 layout = new LinearLayout(this);
                 layout.setOrientation(LinearLayout.HORIZONTAL);
                 layoutSeat.addView(layout);
-            } else if (seats.charAt(index) == 'U') {
+            }
+            else if (seats.charAt(index) == 'A') {
+                count++;
+                TextView view = new TextView(this);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatSize, seatSize);
+                layoutParams.setMargins(seatGaping, seatGaping, seatGaping, seatGaping);
+                view.setLayoutParams(layoutParams);
+                view.setPadding(0, 0, 0, 2 * seatGaping);
+                view.setId(count);
+                view.setGravity(Gravity.CENTER);
+                view.setText(count + "");
+                view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9);
+
+                // 예약된 좌석
+                if (reservedSeat.contains(count)) {
+                    view.setBackgroundResource(R.drawable.ic_seats_booked);
+                    view.setTextColor(Color.WHITE);
+                    view.setTag(STATUS_BOOKED);
+                }
+                else {  // 가능한 좌석
+                    view.setTextColor(Color.BLACK);
+                    view.setTag(STATUS_AVAILABLE);
+                    // 전에 이미 선택해놓은 좌석 표시
+                    if(selectedSeatList.contains(count)) {
+                        Log.d("선택", String.valueOf(count));
+                        selectedIds = selectedIds + view.getId() + ",";
+                        view.setBackgroundResource(R.drawable.ic_seats_selected);
+                        numOfPeople--;
+                    }
+                    else
+                        view.setBackgroundResource(R.drawable.ic_seats_book);
+                }
+                layout.addView(view);
+                seatViewList.add(view);
+                view.setOnClickListener(this);
+
+            } else if (seats.charAt(index) == '_') {
+                TextView view = new TextView(this);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatSize, seatSize);
+                layoutParams.setMargins(seatGaping, seatGaping, seatGaping, seatGaping);
+                view.setLayoutParams(layoutParams);
+                view.setBackgroundColor(Color.TRANSPARENT);
+                view.setText("");
+                layout.addView(view);
+            }
+            /*
+            else if (seats.charAt(index) == 'U') {  // 예약된 좌석
                 count++;
                 TextView view = new TextView(this);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatSize, seatSize);
@@ -106,7 +177,7 @@ public class SeatActivity extends AppCompatActivity implements View.OnClickListe
                 layout.addView(view);
                 seatViewList.add(view);
                 view.setOnClickListener(this);
-            } else if (seats.charAt(index) == 'A') {
+            } else if (seats.charAt(index) == 'A') {    // 가능한 좌석
                 count++;
                 TextView view = new TextView(this);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatSize, seatSize);
@@ -130,7 +201,7 @@ public class SeatActivity extends AppCompatActivity implements View.OnClickListe
                     view.setBackgroundResource(R.drawable.ic_seats_selected);
                     numOfPeople--;
                 }
-            } else if (seats.charAt(index) == 'R') {
+            } else if (seats.charAt(index) == 'R') {    // 예약중인 좌석
                 count++;
                 TextView view = new TextView(this);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatSize, seatSize);
@@ -147,16 +218,10 @@ public class SeatActivity extends AppCompatActivity implements View.OnClickListe
                 layout.addView(view);
                 seatViewList.add(view);
                 view.setOnClickListener(this);
-            } else if (seats.charAt(index) == '_') {
-                TextView view = new TextView(this);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatSize, seatSize);
-                layoutParams.setMargins(seatGaping, seatGaping, seatGaping, seatGaping);
-                view.setLayoutParams(layoutParams);
-                view.setBackgroundColor(Color.TRANSPARENT);
-                view.setText("");
-                layout.addView(view);
             }
+            */
         }
+
 
         if (numOfPeople == 0)
             confirmSeatButton.setText("선택 완료");
