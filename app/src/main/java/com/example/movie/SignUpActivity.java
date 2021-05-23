@@ -11,11 +11,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -42,6 +40,8 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -53,12 +53,13 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
     private GoogleApiClient googleApiClient;
     private static final int RC_SIGN_IN = 1000;
     private CallbackManager mCallbackManager;
-
+    private DatabaseReference mDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         getSupportActionBar().setTitle("Sign Up");
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         ImageButton btn_continue = (ImageButton)findViewById(R.id.btn_sign_in);
         ImageButton btn_login = (ImageButton)findViewById(R.id.btn_login);
         ImageButton btn_google = (ImageButton)findViewById(R.id.btn_google);
@@ -157,9 +158,12 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            DatabaseReference conditionRef = mDatabase.child("user").child(user.getUid());
+                            String email = user.getEmail();
+                            conditionRef.child("email").setValue(email);
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(com.example.movie.SignUpActivity.this, "회원가입 성공",
                                     Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
@@ -209,9 +213,9 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 FirebaseUser user = mAuth.getCurrentUser();
+                                DatabaseReference conditionRef = mDatabase.child("user").child(user.getUid());
                                 String email = user.getEmail();
-                                String uid = user.getUid();
-
+                                conditionRef.child("email").setValue(email);
                                 Log.d(TAG, "createUserWithEmail:success");
                                 Toast.makeText(com.example.movie.SignUpActivity.this, "환영합니다",
                                         Toast.LENGTH_SHORT).show();
@@ -258,7 +262,10 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            DatabaseReference conditionRef = mDatabase.child("user").child(user.getUid());
+                            String email = user.getEmail();
+                            conditionRef.child("email").setValue(email);
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             Toast.makeText(com.example.movie.SignUpActivity.this, "회원가입 성공",
