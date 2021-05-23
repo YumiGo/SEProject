@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -96,6 +97,8 @@ public class ReservationActivity extends AppCompatActivity {
     // 내 예약 식별번호(id)
     private Integer myReservationNumber;
 
+    String name;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,7 +106,7 @@ public class ReservationActivity extends AppCompatActivity {
 
         // 영화 정보
         int id = getIntent().getIntExtra("id", 0);
-        String name = getIntent().getStringExtra("name");
+        name = getIntent().getStringExtra("name");
         String director = getIntent().getStringExtra("director");
         String content = getIntent().getStringExtra("content");
         String imageName = getIntent().getStringExtra("imageName");
@@ -143,6 +146,10 @@ public class ReservationActivity extends AppCompatActivity {
 
         border = findViewById(R.id.border);
         border.setBackgroundColor(receiptCalculate.getCurrentTextColor());
+
+
+
+
     }
 
     /* TODO 최종 확인 버튼 (결제 여기다가 넣으면 됨) */
@@ -151,12 +158,23 @@ public class ReservationActivity extends AppCompatActivity {
             updateReservation();
             Toast.makeText(this, "결제 확인버튼 클릭", Toast.LENGTH_SHORT).show();
             // 여기다 넣어주세요
+            String price = String.valueOf(paymentAmount);
+
+            Button confirmButton=findViewById(R.id.confirmButton);
+            confirmButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent=new Intent(getApplicationContext(),PayActivity.class);
+                    intent.putExtra("price",price);
+                    intent.putExtra("name",name);
+                    startActivity(intent);
+
+
+                }
+            });
 
 
 
-
-
-            this.finish();
         }
     }
 

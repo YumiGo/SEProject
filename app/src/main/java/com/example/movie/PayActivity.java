@@ -22,8 +22,12 @@ public class PayActivity extends AppCompatActivity {
         editName=findViewById(R.id.editName);
         editPrice=findViewById(R.id.editPrice);
 
-        editName.setText("Movie");
-        editPrice.setText("14000");
+        Intent intent=getIntent();
+        String Price=intent.getStringExtra("price");
+        String Name=intent.getStringExtra("name");
+
+        editName.setText(Name);
+        editPrice.setText(Price);
 
         // 버튼 클릭 이벤트
         Button buttonPay = findViewById(R.id.buttonPay);
