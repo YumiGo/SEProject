@@ -54,6 +54,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 //영화는 뷰페이저2 레이아웃으로 좌우 스크롤
 public class HomeFragment extends Fragment {
@@ -82,19 +84,6 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try  {
-                    // 이제 필요 없음
-                    requestAPI();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        thread.start();
-        
 
         // 영화 포스터 스크롤 뷰 구현
         LinearLayoutManager manager = new LinearLayoutManager(
@@ -130,13 +119,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        movieViewList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-        });
-        
 
         // 영화 데이터 중복 다운 방지
         if (!isLoaded) {
@@ -148,9 +130,14 @@ public class HomeFragment extends Fragment {
             // 영화 정보 받아오기
             database.child("movie").get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
+                    int movieCounter = 0;
+
                     for (DataSnapshot child : task.getResult().getChildren()) {
                         Movie movie = child.getValue(Movie.class);
                         Log.d(TAG, "영화 데이터 불러오기: " + movie.toString());
+
+                        /* 주의 건들지 말 것 (데이터베이스 초기화) */
+                        //initDatabase(movieCounter++);
 
                         if (movie.getId() == 0) {
                             nameSwitcher.setText(movie.getName());
@@ -193,6 +180,66 @@ public class HomeFragment extends Fragment {
 
         return root;
     }
+
+    private void initDatabase(int count) {
+        // DB 임시 초기화                                      (강동 메가박스)           (분노의 질주)
+        DatabaseReference movieRef = database.child("theater").child("0").child("movie").child(String.valueOf(count));
+
+        // 날짜 초기화
+        int dateCounter;
+        for (dateCounter = 0; dateCounter < 14; dateCounter++) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.DATE, dateCounter);
+
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH) + 1;
+            int date = calendar.get(Calendar.DATE);
+
+            String today = year + "년 " + month + "월 " + date + "일";
+
+            movieRef.child("date").child(String.valueOf(dateCounter)).setValue(today);
+        }
+
+        // 타임 테이블 초기화
+        for (int i = 0; i < dateCounter; i++) {
+            DatabaseReference timeTableRef = movieRef.child("time").child(String.valueOf(i)).child("time table");
+
+            int numOfTimeTable = ThreadLocalRandom.current().nextInt(1, 4 + 1);
+
+            for (int j = 0; j < numOfTimeTable; j++) {
+                StringBuffer buffer = new StringBuffer();
+
+                if (j < numOfTimeTable / 2) {
+                    buffer.append("오전 ");
+                    int hour = ThreadLocalRandom.current().nextInt(7, 11 + 1);
+                    buffer.append(hour).append("시");
+
+                    int minutes = ThreadLocalRandom.current().nextInt(0, 11 + 1) * 5;
+                    if (minutes != 0)
+                        buffer.append(" ").append(minutes).append("분");
+                }
+                else {
+                    buffer.append("오후 ");
+                    int hour = ThreadLocalRandom.current().nextInt(1, 7 + 1);
+                    buffer.append(hour).append("시");
+
+                    int minutes = ThreadLocalRandom.current().nextInt(0, 11 + 1) * 5;
+                    if (minutes != 0)
+                        buffer.append(" ").append(minutes).append("분");
+                }
+                timeTableRef.child(String.valueOf(j)).setValue(buffer.toString());
+
+
+                // 예약 초기화
+                DatabaseReference resvRef = movieRef.child("time").child(String.valueOf(i)).child("reservation").child(String.valueOf(j));
+                resvRef.child("reserved").child("0").setValue(0);
+                resvRef.child("reserving").child("0").setValue(0);
+            }
+        }
+    }
+
+
+
 
     // 영화 포스터 자동으로 스크롤 해주기
     public void autoScroll() {

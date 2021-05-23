@@ -54,6 +54,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         // 영화 예약 액티비티 생성
         holder.cardView.setOnClickListener(v -> {
             Intent intent = new Intent(context, MovieActivity.class);
+            intent.putExtra("id", movie.getId());
             intent.putExtra("name", movie.getName());
             intent.putExtra("director", movie.getDirector());
             intent.putExtra("content", movie.getContent());

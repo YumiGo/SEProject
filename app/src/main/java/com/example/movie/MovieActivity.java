@@ -1,16 +1,17 @@
 package com.example.movie;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.movie.data.Movie;
 
 import java.io.File;
 
@@ -21,6 +22,7 @@ public class MovieActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie);
         
         // 영화 정보
+        int id = getIntent().getIntExtra("id", 0);
         String name = getIntent().getStringExtra("name");
         String director = getIntent().getStringExtra("director");
         String content = getIntent().getStringExtra("content");
@@ -47,5 +49,19 @@ public class MovieActivity extends AppCompatActivity {
         TextView movieContent = findViewById(R.id.movieContent);
         movieContent.setText(content);
 
+        // 영화 예약 엑티비티
+        Button reservationButton = findViewById(R.id.reservationButton);
+        reservationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ReservationActivity.class);
+                intent.putExtra("id", id);
+                intent.putExtra("name", name);
+                intent.putExtra("director", director);
+                intent.putExtra("content", content);
+                intent.putExtra("imageName", imageName);
+                startActivity(intent);
+            }
+        });
     }
 }

@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:context=".ReservationActivity"
+        android:padding="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="극장"
+            android:textSize="25sp"/>
+        <TextView
+            android:id="@+id/theaterText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:padding="10dp"
+            android:text="선택된 극장"
+            android:textSize="20sp"
+            android:layout_weight="1"
+            android:textColor="?android:attr/colorPrimary"
+            android:textStyle="bold"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="날짜"
+            android:textSize="25sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="10dp">
+
+            <TextView
+                android:id="@+id/selectedDateText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:text="선택된 날짜"
+                android:textSize="20sp"
+                android:layout_weight="1"
+                android:textColor="?android:attr/colorPrimary"
+                android:textStyle="bold"/>
+
+            <Button
+                android:id="@+id/changeDateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:text="날짜선택"
+                android:onClick="showDatePicker"/>
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="상영시간표"
+            android:textSize="25sp"/>
+        <com.example.movie.data.NonScrollListView
+            android:id="@+id/timeTable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="인원"
+            android:textSize="25sp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="13.8dp"
+                    android:gravity="center"
+                    android:text="성인"
+                    android:textColor="?android:attr/colorPrimary"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+                <Spinner
+                    android:id="@+id/adultSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="청소년"
+                    android:textSize="20sp"
+                    android:textColor="?android:attr/colorPrimary"
+                    android:textStyle="bold"
+                    android:paddingHorizontal="5dp" />
+                <Spinner
+                    android:id="@+id/childSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="좌석"
+            android:textSize="25sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="10dp">
+            <TextView
+                android:id="@+id/selectedSeatText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:text="-"
+                android:textSize="20sp"
+                android:layout_weight="1"
+                android:textColor="?android:attr/colorPrimary"
+                android:textStyle="bold"/>
+            <Button
+                android:id="@+id/selectSeatButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:text="좌석선택"
+                android:onClick="selectSeat"/>
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="가격"
+            android:textSize="25sp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/receiptCalculate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="예매 가격 계산"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:paddingHorizontal="5dp" />
+
+            <!-- 경계선 -->
+            <View
+                android:id="@+id/border"
+                android:layout_width="200dp"
+                android:layout_height="1.5dp"
+                android:layout_marginHorizontal="2dp"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/receiptResult"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="예매 가격 계산 결과"
+                android:textSize="20sp"
+                android:textColor="?android:attr/colorPrimary"
+                android:textStyle="bold"
+                android:paddingHorizontal="5dp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/confirmButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="결제(확인버튼)" />
+
+    </LinearLayout>
+
+</ScrollView>
