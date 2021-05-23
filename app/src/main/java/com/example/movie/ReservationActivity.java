@@ -43,6 +43,7 @@ public class ReservationActivity extends AppCompatActivity {
 
     private static String TAG = "예약";
     private static int SELECT_SEAT = 1;
+    private static int REQUEST_PAY = 2;
 
     /* 파이어베이스 */
     DatabaseReference database = FirebaseDatabase.getInstance().getReference();
@@ -57,11 +58,10 @@ public class ReservationActivity extends AppCompatActivity {
     private boolean isSeatLoaded = false;
 
     // 극장(임시, 강동 메가박스)
-    private String theater = "강동 메가박스";     // TODO 중요
+    private String theater = "강동 메가박스";
 
     // 파이어베이스의 데이터 중 오늘 날짜의 인덱스
     private int selectedDateIndex = 0;
-
 
     /* UI */
     // 날짜선택
@@ -91,7 +91,7 @@ public class ReservationActivity extends AppCompatActivity {
     // 가격(영수증)
     private TextView receiptCalculate;
     private TextView receiptResult;
-    View border;    // 경계선
+    private View border;    // 경계선
     private int paymentAmount = 0;  // 결제액
 
     // 내 예약 식별번호(id)
@@ -146,38 +146,20 @@ public class ReservationActivity extends AppCompatActivity {
 
         border = findViewById(R.id.border);
         border.setBackgroundColor(receiptCalculate.getCurrentTextColor());
-
-
-
-
     }
 
     /* TODO 최종 확인 버튼 (결제 여기다가 넣으면 됨) */
     public void finalConfirm(View v) {
         if (isAllOk()) {
-            updateReservation();
-            Toast.makeText(this, "결제 확인버튼 클릭", Toast.LENGTH_SHORT).show();
             // 여기다 넣어주세요
             String price = String.valueOf(paymentAmount);
 
-            Button confirmButton=findViewById(R.id.confirmButton);
-            confirmButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent=new Intent(getApplicationContext(),PayActivity.class);
-                    intent.putExtra("price",price);
-                    intent.putExtra("name",name);
-                    startActivity(intent);
-
-
-                }
-            });
-
-
-
+            Intent intent=new Intent(getApplicationContext(),PayActivity.class);
+            intent.putExtra("price",price);
+            intent.putExtra("name",name);
+            startActivityForResult(intent, REQUEST_PAY );
         }
     }
-
 
     private boolean isAllOk() {
         if (selectedTime == null || selectedDateText.getText().toString().equals("-"))
@@ -224,6 +206,7 @@ public class ReservationActivity extends AppCompatActivity {
     
     // 상영시간표 초기화
     private void initTimeTable() {
+
         final int[] selectedItem = new int[1];
 
         ListView timeTable = findViewById(R.id.timeTable);
@@ -277,6 +260,8 @@ public class ReservationActivity extends AppCompatActivity {
 
     //  예약된 좌석 정보 초기화
     private void initReservedSeat() {
+        isSeatLoaded = false;
+
         DatabaseReference reservationRef = ref.child("time").child(String.valueOf(selectedDateIndex))
                 .child("reservation").child(String.valueOf(selectedTimePosition));
 
@@ -419,13 +404,14 @@ public class ReservationActivity extends AppCompatActivity {
         else
             intent.putExtra("selectedSeatList", new HashSet<>());
 
-        intent.putExtra("reservedSeat", reservedSeat);
-        intent.putExtra("reservingSeat", reservingSeat);
-
         if (!isSeatLoaded) {
             Toast.makeText(this, "잠시뒤에 다시 시도해주세요", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "좌석 예약 정보가 아직 덜 다운로드됨");
             return;
+        }
+        else {
+            intent.putExtra("reservedSeat", reservedSeat);
+            intent.putExtra("reservingSeat", reservingSeat);
         }
 
         startActivityForResult(intent, SELECT_SEAT);
@@ -470,7 +456,6 @@ public class ReservationActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SELECT_SEAT && data != null) {
-
             selectedSeatList = (HashSet<Integer>) data.getSerializableExtra("selectedSeatList");
             ArrayList<Integer> temp = new ArrayList<>(selectedSeatList);
             Collections.sort(temp);
@@ -490,6 +475,12 @@ public class ReservationActivity extends AppCompatActivity {
 
             TextView selectedSeatText = findViewById(R.id.selectedSeatText);
             selectedSeatText.setText(selectedSeatStr);
+        }
+
+        else if (requestCode == REQUEST_PAY) {
+            updateReservation();
+            Toast.makeText(this, "결제 완료", Toast.LENGTH_SHORT).show();
+            finish();
         }
     }
 
@@ -522,7 +513,7 @@ public class ReservationActivity extends AppCompatActivity {
 
         int year = start.get(Calendar.YEAR);
         int month = start.get(Calendar.MONTH);
-        int date = start.get(Calendar.DATE) - 1;
+        int date = start.get(Calendar.DATE);
         start.set(year, month, date);
         end.set(year, month, date);
         end.add(Calendar.DATE, 7);
