@@ -47,6 +47,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         position = position % 10;
         if (mList == null || mList.size() == 0)
             return;
+        if (position < 0 || position >= mList.size())
+            return;
 
         Movie movie = mList.get(position);
         holder.movieImage.setImageBitmap(movie.getImage());
