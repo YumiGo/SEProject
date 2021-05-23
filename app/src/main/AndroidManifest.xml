@@ -41,7 +41,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity android:name=".PayActivity"/>
+        <activity android:name=".KakaopayActivity"/>
         <activity android:name=".MovieActivity"/>
         <activity android:name=".SignUpActivity"/>
         <activity android:name=".SignInActivity"/>
